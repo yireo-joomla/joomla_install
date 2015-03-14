@@ -58,5 +58,10 @@ require_once 'lib/loader.php';
             </tbody>
         </table>
         </div>
+
+        <hr/>
+        <a href="https://github.com/yireo/joomla_install">https://github.com/yireo/joomla_install</a>
     </body>
 </html>
+
+
