@@ -1,8 +1,0 @@
-{
-    "requirements": {
-        "joomla-cms-branch": "staging",
-        "extensions": [
-            "https://github.com/joomla-extensions/patchtester/releases/download/2.0.0.beta2/com_patchtester.tar.gz"
-        ]
-    }
-}

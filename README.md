@@ -5,50 +5,41 @@ process, this project forms an attempt to roll out new fresh Joomla
 sites with exactly those requirements needed.
 
 ## Current state
-None.
+Alpha.
+
+## Requirements
+* MySQL user that has privilege to create new databases (DB prefix: `example\_`)
+* Composer installed on server (needed to install `joomla-console`)
+* Download extra packages to `source/extensions`
 
 ## Included steps
-* Create a MySQL database
-    * Admin-user gets CREATE privileges for `pbf\_%` databases
-    * `CREATE DB 'pbf_joomla1'`
-    * Create a db-user `pbf_joomla1` with random password
-    * Store db-credentials in `build.json`
-* Checkout Joomla sources
-    * `git clone https://github.com/joomla/joomla-cms.git`
-    * `git checkout staging`
-    * Select right branch from `requirements.json`
-* Install Joomla automatically
-    * Select db-credentials from `build.json`
-    * Select which demo data from `requirements.json`
+* Management interface (`index.php`) to quickly create and dump sites
+* Create a new site using `joomla-console`
+    * `joomla-console` requires Yireo PR to set custom DB prefix
 * Install additional Joomla extensions
-    * Patchtester component
-    * Optional: OScontent for dummy content
-    * Optional: Language-packs
-* Optionally modify other things in Joomla
+    * Drop extension-packages in `source/extensions` folder and thats it
+    * Currently included:
+        * Patchtester component
+    * Optional:
+        * OScontent for dummy content
+        * Language-packs
+* Modify other things using `cli/pbf.php` script
+    * Disable debugger plugin
     * Set lifetime to 180s
+
+## Setup
+* Copy `config.json.sample` to `config.json`
+    * Modify the MySQL data
+    * Modify strings if needed
+* Go to the `source` folder and run the `setup.sh` script, to install `joomla-console` plus download packages
 
 ## Site structure
 ```
-./cli
-    @todo: Build tools
+./bin
+    ./create.sh - Simple script to install a site using joomla-console
 ./joomla1
-    ./public_html
-    ./build.json
-    ./requirements.json
 ./joomla2
-    ./public_html
-    ./build.json
-    ./requirements.json
+./source
+    ./joomla-console - Git clone 
 ...
 ```
-
-## Tools
-* PHP-scripts to build site
-    * Handling 
-* git
-* joomla CLI tool from JoomlaTools (?)
-
-## Future steps
-* Investigate option for using `composer`
-* Simple Bootstrap 3 management interface to ditch and create sites
-

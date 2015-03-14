@@ -1,0 +1,25 @@
+{
+    "mysql": {
+        "username": "YOUR_MYSQL_USERNAME",
+        "password": "YOUR_MYSQL_PASSWORD",
+        "dbprefix": "pbf_"
+    },
+    "site": {
+        "number": 20
+    },
+    "strings": {
+        "page_title": "Joomla PBF sites",
+        "page_description": "The following is a listing of temporary sites that are available during PBF sessions.",
+        "column_name": "Name",
+        "column_username": "Username",
+        "column_password": "Password",
+        "column_status": "Status",
+        "frontend_url": "Site URL",
+        "backend_url": "Admin URL",
+        "status_active": "Active",
+        "status_noapp": "No application",
+        "status_noconfig": "No configuration",
+        "action_create": "Create site",
+        "action_destroy": "Destroy site"
+    }
+}
