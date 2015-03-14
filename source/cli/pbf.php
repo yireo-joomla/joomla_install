@@ -71,7 +71,47 @@ class PbfCli extends JApplicationCli
 		JFactory::getApplication('site');
 
 		$this->togglePlugin('debug', 'system', 0);
+
+		$this->resetPassword();
 	}
+
+    public function resetPassword()
+    {
+        $jsonFile = JPATH_ROOT.'/credentials.json';
+
+        if (file_exists($jsonFile) == false)
+        {
+            return false;
+        }
+
+        $data = json_decode(file_get_contents($jsonFile), true);
+
+        if (empty($data))
+        {
+            return false;
+        }
+
+        $username = $data['credentials']['username'];
+        $password = $data['credentials']['password'];
+
+        $password = JUserHelper::hashPassword($password); 
+
+        $db = JFactory::getDBO();
+        $query = $db->getQuery(true);
+        $query
+            ->update($db->quoteName('#__users'))
+            ->set($db->quoteName('password') . ' = ' . $db->quote($password))
+            ->where(
+                array(
+                    $db->quoteName('username') . '=' . $db->quote($username)
+                )
+            );
+
+        $db->setQuery($query);
+        $db->execute();
+
+        return true;
+    }
 
     public function togglePlugin($name, $folder, $state = 0)
     {
@@ -90,6 +130,8 @@ class PbfCli extends JApplicationCli
 
         $db->setQuery($query);
         $db->execute();
+
+        return true;
     }
 }
 
