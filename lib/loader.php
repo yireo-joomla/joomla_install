@@ -2,7 +2,6 @@
 require_once 'config.php';
 require_once 'db.php';
 require_once 'app.php';
-require_once 'auth.php';
 
 $config = new Config(__DIR__.'/../config.json');
 $db = new Db($config);

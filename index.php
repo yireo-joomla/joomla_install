@@ -37,7 +37,11 @@ require_once 'lib/loader.php';
                         <?php echo $site['username']; ?>
                     </td>
                     <td>
+                        <?php if($app->isAuthorized()) : ?>
                         <?php echo $site['password']; ?>
+                        <?php else: ?>
+                        *******
+                        <?php endif; ?>
                     </td>
                     <td>
                         <?php echo $config->get('strings.status_'.$site['status']); ?>

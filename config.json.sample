@@ -5,6 +5,7 @@
         "dbprefix": "pbf_"
     },
     "site": {
+        "secret": "YOUR_SECRET",
         "number": 20
     },
     "strings": {

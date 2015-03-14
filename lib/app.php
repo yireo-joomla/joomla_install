@@ -35,13 +35,14 @@ class App
             $folder = $name;
             $status = $this->getSiteStatus($folder);
             $actions = $this->getSiteActions($status);
+            $credentials = $this->getCredentials($folder);
 
             $site = array(
                 'number' => $i,
                 'name' => $name,
                 'folder' => $folder,
-                'username' => 'pbf',
-                'password' => 'pbf',
+                'username' => $credentials['username'],
+                'password' => $credentials['password'],
                 'status' => $status,
                 'actions' => $actions,
             );
@@ -59,10 +60,59 @@ class App
         }
 
         $site = 'joomla'.$number;
-        $this->db->createDb($site);
+        $siteFolder = $this->root.'/'.$site;
 
-        $folder = $this->root.'/'.$site;
-        @exec('cp -R source/joomla-cms '.$folder);
+        // Install the site
+        $this->runJoomlaCmd('site:create', $site);
+
+        // Generate a new admin password
+        $this->generatePassword($site);
+
+        // Copy the htaccess file
+        copy($siteFolder.'/htaccess.txt', $siteFolder.'/.htaccess');
+
+        // Copy the CLI file
+        copy($this->root.'/source/cli/pbf.php', $siteFolder.'/cli/pbf.php');
+
+        // Run the CLI file
+        @exec('php '.$siteFolder.'/cli/pbf.php');
+
+        // Install the extensions
+        $extensions = glob('source/extensions/*');
+        foreach($extensions as $extension) {
+            $this->runJoomlaCmd('extension:installfile', $site, $extension);
+        }
+    }
+
+    public function getCredentials($site)
+    {
+        $jsonFile = $this->root.'/'.$site.'/credentials.json';
+        if (file_exists($jsonFile) == false) {
+            return array('username' => null, 'password' => null);
+        }
+
+        $json = file_get_contents($jsonFile);
+        $data = json_decode($json, true);
+    
+        if (isset($data['credentials'])) {
+            return $data['credentials'];
+        }
+
+        return array('username' => null, 'password' => null);
+    }
+
+    public function generatePassword($site)
+    {
+        $alphabet = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
+        $alphabet = str_split($alphabet);
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, count($alphabet)-1);
+            $pass[$i] = $alphabet[$n];
+        }
+        $pass = implode('', $pass);
+
+        $data = array('credentials' => array('username' => 'admin', 'password' => $pass));
+        file_put_contents($this->root.'/'.$site.'/credentials.json', json_encode($data));
     }
 
     public function destroySite($number)
@@ -71,11 +121,42 @@ class App
             return false;
         }
 
-        $this->db->dropDb('joomla'.$number);
+        $site = 'joomla'.$number;
 
-        // @todo: Find a very very secure way to do this?
-        $cmd = 'rm -r '.$this->root.'/joomla'.$number;
-        exec($cmd);
+        $this->runJoomlaCmd('site:delete', $site);
+    }
+
+    public function runJoomlaCmd($task, $site, $arguments = null)
+    {
+        $mysql_username = $this->config->get('mysql.username');
+        $mysql_password = $this->config->get('mysql.password');
+        $mysql_prefix = $this->config->get('mysql.dbprefix');
+
+        $joomlaCmd = array();
+        $joomlaCmd[] = $this->root.'/source/joomla-console/bin/joomla';
+        $joomlaCmd[] = $task;
+        $joomlaCmd[] = '--www='.$this->root;
+        $joomlaCmd[] = '--mysql='.$mysql_username.':'.$mysql_password;
+        $joomlaCmd[] = '--mysql_db_prefix='.$mysql_prefix;
+
+        if($task == 'site:create') {
+            $joomlaCmd[] = '--sample-data=testing';
+        }
+
+        $joomlaCmd[] = $site;
+
+        if(!empty($arguments)) {
+            if(is_array($arguments)) {
+                $joomlaCmd = array_merge($joomlaCmd, $arguments);
+            } else {
+                $joomlaCmd[] = $arguments;
+            }
+        }
+
+        $joomlaCmd = implode(' ', $joomlaCmd);
+        $this->log('CMD: '.$joomlaCmd);
+        @exec($joomlaCmd, $output);
+        $this->log('OUTPUT: '.var_export($output, true));
     }
 
     public function getSiteStatus($folder)
@@ -94,8 +175,19 @@ class App
 
     public function isAuthorized()
     {
-        // @todo: Create some kind of authentication here
-        return true;
+        $siteSecret = $this->config->get('site.secret');
+
+        if (isset($_REQUEST['secret']) && $_REQUEST['secret'] == $siteSecret) {
+            setcookie('secret', $_REQUEST['secret']);
+            header('Location: index.php');
+            return true;
+        }
+
+        if (isset($_COOKIE['secret']) && $_COOKIE['secret'] == $siteSecret) {
+            return true;
+        }
+
+        return false;
     }
 
     public function getSiteActions($status)
@@ -112,5 +204,11 @@ class App
         }
         
         return $actions;
+    }
+
+    public function log($string)
+    {
+        @mkdir($this->root.'/logs');
+        file_put_contents($this->root.'/logs/debug.log', $string."\n", FILE_APPEND);
     }
 }
