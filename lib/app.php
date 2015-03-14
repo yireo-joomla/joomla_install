@@ -208,7 +208,9 @@ class App
 
     public function log($string)
     {
-        @mkdir($this->root.'/logs');
-        file_put_contents($this->root.'/logs/debug.log', $string."\n", FILE_APPEND);
+        if($this->config->get('site.log') == 1) {
+            @mkdir($this->root.'/logs');
+            file_put_contents($this->root.'/logs/debug.log', $string."\n", FILE_APPEND);
+        }
     }
 }

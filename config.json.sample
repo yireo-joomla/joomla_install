@@ -6,6 +6,7 @@
     },
     "site": {
         "secret": "YOUR_SECRET",
+        "log": 0,
         "number": 20
     },
     "strings": {
