@@ -66,7 +66,7 @@ class App
         $this->runJoomlaCmd('site:create', $site);
 
         // Generate a new admin password
-        $this->generatePassword($site);
+        $this->generateCredentials($site);
 
         // Copy the htaccess file
         copy($siteFolder.'/htaccess.txt', $siteFolder.'/.htaccess');
@@ -82,6 +82,8 @@ class App
         foreach($extensions as $extension) {
             $this->runJoomlaCmd('extension:installfile', $site, $extension);
         }
+
+        // Run additional queries
     }
 
     public function getCredentials($site)
@@ -101,17 +103,38 @@ class App
         return array('username' => null, 'password' => null);
     }
 
-    public function generatePassword($site)
+    public function generateCredentials($site)
     {
-        $alphabet = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
-        $alphabet = str_split($alphabet);
-        for ($i = 0; $i < 8; $i++) {
-            $n = rand(0, count($alphabet)-1);
-            $pass[$i] = $alphabet[$n];
+        $password_type = trim($this->config->get('site.password_type'));
+        if (empty($password_type)) {
+            $password_type = 'default';
         }
-        $pass = implode('', $pass);
 
-        $data = array('credentials' => array('username' => 'admin', 'password' => $pass));
+        switch($password_type) {
+            case 'generate': 
+                $username = 'admin';
+                $alphabet = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
+                $alphabet = str_split($alphabet);
+                for ($i = 0; $i < 8; $i++) {
+                    $n = rand(0, count($alphabet)-1);
+                    $password[$i] = $alphabet[$n];
+                }
+                $password = implode('', $password);
+                break;
+
+            case 'admin':
+                $username = 'admin';
+                $password = 'admin';
+                break;
+
+            case 'default':
+            default:
+                $username = $site;
+                $password = $site;
+                break;
+        }
+
+        $data = array('credentials' => array('username' => $username, 'password' => $password));
         file_put_contents($this->root.'/'.$site.'/credentials.json', json_encode($data));
     }
 

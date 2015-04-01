@@ -60,5 +60,26 @@ https://github.com/joomlatools/joomla-console
 ...
 ```
 
+## Notes: Setting the password type
+In your `config.json` you can set the option `password_type`.
+See the `config.json.sample` file for an example.
+The `password_type` can be one of the following:
+* `default` = The username and password of the Super User will be the same as the site name. For example `joomla1`.
+* `admin` = The username and password of the Super User will be `admin`
+* `generate` = The username of the Super User will be `admin`. The password is automatically generated.
+
+    ```
+    "password_type": "generate",
+    ```
+
+Additionally, there is the option `password_reset` with a default value `0`. If this option is set
+to `1`, it will require the Super User to change his/her password at first login. (Technically, the
+`require_reset` flag in the `com_users` table is set.
+
+    ```
+    "password_reset": 1,
+    ```
+
 ## Todo
+* Command-line script to destroy or create all sites in batches
 * Add language-packs

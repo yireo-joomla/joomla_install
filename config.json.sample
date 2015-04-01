@@ -7,6 +7,8 @@
     "site": {
         "secret": "YOUR_SECRET",
         "log": 0,
+        "password_type": "default",
+        "password_reset": 0,
         "number": 20
     },
     "strings": {
