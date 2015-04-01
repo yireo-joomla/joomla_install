@@ -38,6 +38,13 @@ class Db
         $this->db->query('DROP DATABASE '.$dbName);
     }
 
+    public function runQuery($siteName, $query)
+    {
+        $dbName = $this->filterDbName($dbName);
+        $this->db->select_db($dbName);
+        $this->db->query($query);
+    }
+
     protected function filterDbName($dbName)
     {
         $prefix = $this->config->get('mysql.prefix');

@@ -53,6 +53,12 @@ class App
         return $sites;
     }
 
+    public function getSite($siteName)
+    {
+        $site = new Site($siteName);
+        return $site;
+    }
+
     public function createSite($number)
     {
         if($this->isAuthorized() == false) {
@@ -83,7 +89,14 @@ class App
             $this->runJoomlaCmd('extension:installfile', $site, $extension);
         }
 
-        // Run additional queries
+        // Password reset on first login
+        $password_reset = (bool)$this->config->get('site.password_reset');
+        if($password_reset) {
+            $query = 'UPDATE `#__users` SET `requireReset`=1';
+            $db = $this->getSite($site)->getDbo();
+            $db->setQuery($query);
+            $db->execute();
+        }
     }
 
     public function getCredentials($site)
