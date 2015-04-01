@@ -83,6 +83,14 @@ class App
         // Run the CLI file
         @exec('php '.$siteFolder.'/cli/pbf.php');
 
+        // Download any extensions to source/extensions
+        $extensionUrls = $this->config->get('extensions');
+        if(!empty($extensionUrls)) {
+            foreach($extensionUrls as $extensionUrl) {
+                $this->downloadExtension($extensionUrl);
+            }
+        }
+
         // Install the extensions
         $extensions = glob('source/extensions/*');
         foreach($extensions as $extension) {
@@ -159,7 +167,30 @@ class App
 
         $site = 'joomla'.$number;
 
+        // Gather the extensions
+        $extensions = glob('source/extensions/*');
+        foreach($extensions as $extension) {
+            $this->runJoomlaCmd('extension:installfile', $site, $extension);
+        }
+        return;
+
         $this->runJoomlaCmd('site:delete', $site);
+    }
+
+    public function downloadExtension($extensionUrl)
+    {
+        $filename = basename($extensionUrl);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $extensionUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    
+        $data = curl_exec($ch);
+        $fd = fopen($this->root.'/source/extensions/'.$filename, 'w');
+        fwrite($fd, $data);
+        fclose($fd);
+
+        curl_close($ch);
     }
 
     public function runJoomlaCmd($task, $site, $arguments = null)

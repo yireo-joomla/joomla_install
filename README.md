@@ -76,10 +76,22 @@ Additionally, there is the option `password_reset` with a default value `0`. If 
 to `1`, it will require the Super User to change his/her password at first login. (Technically, the
 `require_reset` flag in the `com_users` table is set.
 
-    ```
     "password_reset": 1,
-    ```
 
+## Tip: Adding extensions by URL
+You can automatically install extensions by dumping them in the `source/extensions` folder. You can
+also automatically install extensions by defining them in the `config.json` file:
+
+    {
+        "extensions": {
+            "dutch": "http://joomlacode.org/gf/download/frsrelease/20031/162287/nl-NL_joomla_lang_full_3.4.1v1.zip",
+        },
+    }
+
+You can check the URL http://update.joomla.org/language/translationlist_3.xml for instance for
+translations. Make sure to use the URL pointining to the final ZIP file, not an URL to a XML file.
+In effect, this will download the ZIP to the `source/extensions` folder.
+    
 ## Todo
 * Command-line script to destroy or create all sites in batches
 * Add language-packs

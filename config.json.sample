@@ -11,6 +11,9 @@
         "password_reset": 0,
         "number": 20
     },
+    "extensions": {
+        "dutch": "http://joomlacode.org/gf/download/frsrelease/20031/162287/nl-NL_joomla_lang_full_3.4.1v1.zip"
+    },
     "strings": {
         "page_title": "Joomla PBF sites",
         "page_description": "The following is a listing of temporary sites that are available during PBF sessions.",
