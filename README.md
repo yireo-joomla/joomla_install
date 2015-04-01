@@ -5,7 +5,7 @@ process, this project forms an attempt to roll out new fresh Joomla
 sites with exactly those requirements needed.
 
 ## Current state
-Alpha.
+Beta.
 
 ## Requirements
 * MySQL user that has privilege to create new databases (DB prefix: `example\_`)
