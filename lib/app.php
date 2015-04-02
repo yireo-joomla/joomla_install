@@ -244,9 +244,13 @@ class App
     {
         $siteSecret = $this->config->get('site.secret');
 
-        if (isset($_REQUEST['secret']) && $_REQUEST['secret'] == $siteSecret) {
-            setcookie('secret', $_REQUEST['secret']);
-            header('Location: index.php');
+        if (isset($_GET['secret']) && $_GET['secret'] == $siteSecret) {
+            if(headers_sent() == false) {
+                setcookie('secret', $_GET['secret']);
+                header('Location: index.php');
+            } else {
+                die('Headers already sent');
+            }
             return true;
         }
 
