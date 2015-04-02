@@ -22,7 +22,8 @@ class Db
     
         $this->db = new mysqli($host, $username, $password);
         if ($this->db->connect_errno) {
-            $this->errors[] = 'Failed to connect to MySQL: '.$this->db->connect_error;
+            die('Failed to connect to MySQL: '.$this->db->connect_error);
+            //$this->errors[] = 'Failed to connect to MySQL: '.$this->db->connect_error;
         }
     }
 
