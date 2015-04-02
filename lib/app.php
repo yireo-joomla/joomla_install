@@ -7,9 +7,9 @@ class App
         $this->db = $db;
         $this->root = dirname(__DIR__);
 
-        if ($this->isAuthorized() && isset($_REQUEST['task']) && isset($_REQUEST['site'])) {
-            $task = preg_replace('/([^a-zA-Z0-9]+)/', '', $_REQUEST['task']);
-            $site = (int)$_REQUEST['site'];
+        if ($this->isAuthorized() && isset($_GET['task']) && isset($_GET['site'])) {
+            $task = preg_replace('/([^a-zA-Z0-9]+)/', '', $_GET['task']);
+            $site = (int)$_GET['site'];
 
             if($task == 'create') {
                 $this->createSite($site);
@@ -67,6 +67,15 @@ class App
 
         $site = 'joomla'.$number;
         $siteFolder = $this->root.'/'.$site;
+        @mkdir($siteFolder);
+        
+        if(is_dir($siteFolder) == false) {
+            die('Folder '.$siteFolder.' does not exist');
+        }
+
+        if(is_writable($siteFolder) == false) {
+            die('Folder '.$siteFolder.' is not writable');
+        }
 
         // Install the site
         $this->runJoomlaCmd('site:create', $site);
@@ -156,7 +165,10 @@ class App
         }
 
         $data = array('credentials' => array('username' => $username, 'password' => $password));
-        file_put_contents($this->root.'/'.$site.'/credentials.json', json_encode($data));
+        $rt = file_put_contents($this->root.'/'.$site.'/credentials.json', json_encode($data));
+        if($rt == false) {
+            die('Failed to write to '.$this->root.'/'.$site.'/credentials.json');
+        }
     }
 
     public function destroySite($number)
@@ -281,7 +293,10 @@ class App
     {
         if($this->config->get('site.log') == 1) {
             @mkdir($this->root.'/logs');
-            file_put_contents($this->root.'/logs/debug.log', $string."\n", FILE_APPEND);
+            $rt = file_put_contents($this->root.'/logs/debug.log', $string."\n", FILE_APPEND);
+            if($rt == false) {
+                die('Failed to write to '.$this->root.'/logs/debug.log');
+            }
         }
     }
 }
