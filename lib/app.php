@@ -1,11 +1,20 @@
 <?php
 class App
 {
+    protected $php_binary = null;
+
     public function __construct(Config $config, Db $db)
     {
         $this->config = $config;
         $this->db = $db;
         $this->root = dirname(__DIR__);
+
+        $php_binary = $this->config->get('server.php_binary');
+        if (!empty($php_binary)) {
+            $this->php_binary = $php_binary;
+        } else {
+            $this->php_binary = 'php';
+        }
 
         if ($this->isAuthorized() && isset($_GET['task']) && isset($_GET['site'])) {
             $task = preg_replace('/([^a-zA-Z0-9]+)/', '', $_GET['task']);
@@ -61,24 +70,25 @@ class App
 
     public function createSite($number)
     {
+        umask(0022);
+
         if($this->isAuthorized() == false) {
             return false;
         }
 
         $site = 'joomla'.$number;
         $siteFolder = $this->root.'/'.$site;
-        @mkdir($siteFolder);
         
-        if(is_dir($siteFolder) == false) {
-            die('Folder '.$siteFolder.' does not exist');
-        }
-
-        if(is_writable($siteFolder) == false) {
+        if(is_writable($this->root) == false) {
             die('Folder '.$siteFolder.' is not writable');
         }
 
         // Install the site
         $this->runJoomlaCmd('site:create', $site);
+
+        if(is_dir($siteFolder) == false) {
+            die('Folder '.$siteFolder.' does not exist');
+        }
 
         if(is_dir($siteFolder.'/libaries') == false) {
             die('Site creation failed');
@@ -94,7 +104,7 @@ class App
         copy($this->root.'/source/cli/pbf.php', $siteFolder.'/cli/pbf.php');
 
         // Run the CLI file
-        @exec('php '.$siteFolder.'/cli/pbf.php');
+        exec($this->php_binary.' '.$siteFolder.'/cli/pbf.php');
 
         // Download any extensions to source/extensions
         $extensionUrls = $this->config->get('extensions');
@@ -183,13 +193,6 @@ class App
 
         $site = 'joomla'.$number;
 
-        // Gather the extensions
-        $extensions = glob('source/extensions/*');
-        foreach($extensions as $extension) {
-            $this->runJoomlaCmd('extension:installfile', $site, $extension);
-        }
-        return;
-
         $this->runJoomlaCmd('site:delete', $site);
     }
 
@@ -236,9 +239,10 @@ class App
             }
         }
 
-        $joomlaCmd = implode(' ', $joomlaCmd);
+        $joomlaCmd = implode(' ', $joomlaCmd).' 2>&1';
+
         $this->log('CMD: '.$joomlaCmd);
-        @exec($joomlaCmd, $output);
+        system($joomlaCmd, $output);
         $this->log('OUTPUT: '.var_export($output, true));
     }
 
@@ -296,7 +300,7 @@ class App
     public function log($string)
     {
         if($this->config->get('site.log') == 1) {
-            @mkdir($this->root.'/logs');
+            mkdir($this->root.'/logs');
             $rt = file_put_contents($this->root.'/logs/debug.log', $string."\n", FILE_APPEND);
             if($rt == false) {
                 die('Failed to write to '.$this->root.'/logs/debug.log');
