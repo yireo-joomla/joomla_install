@@ -301,7 +301,7 @@ class App
     public function log($string)
     {
         if($this->config->get('site.log') == 1) {
-            mkdir($this->root.'/logs');
+            @mkdir($this->root.'/logs');
             $rt = file_put_contents($this->root.'/logs/debug.log', $string."\n", FILE_APPEND);
             if($rt == false) {
                 die('Failed to write to '.$this->root.'/logs/debug.log');
