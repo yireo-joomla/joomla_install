@@ -24,6 +24,7 @@ with username `admin` and your password. Passwords are automatically being gener
 if you have used the secret-token successfully.
 
 ## Setup
+* Make sure `composer` is installed on the server
 * Copy `config.json.sample` to `config.json`
     * Modify the MySQL data
     * Modify strings if needed
@@ -92,7 +93,7 @@ You can check the URL http://update.joomla.org/language/translationlist_3.xml fo
 translations. Make sure to use the URL pointining to the final ZIP file, not an URL to a XML file.
 In effect, this will download the ZIP to the `source/extensions` folder.
 
-## Troubleshooting
+## Troubleshooting tips
 Make sure the default `php` binary is the CLI binary. If for instance the default `/usr/bin/php` binary is a FastCGI executable, the
 CLI tasks of this project will not run. If rearranging the PATH is no option, modify the `config.json` file to point to the right binary.
 
@@ -109,6 +110,12 @@ Also make sure the `source/joomla-console/bin/joomla` script uses the right bina
 Make sure `display_errors` is `On`. Also make sure the `memory_limit` is large enough. Enable the `log` flag in the configuration if
 you want to log the commands to the `logs` folder.
 
+Don't forget to run the command steps in the `source` folder. This also requires `composer` to be already installed on the server.
+
+If in a CGI environment, make sure all files and folders are only writable for the current user:
+
+    find . -type f -exec chmod 644 {} \;
+    find . -type d -exec chmod 755 {} \;
+
 ## Todo
 * Command-line script to destroy or create all sites in batches
-* Add language-packs

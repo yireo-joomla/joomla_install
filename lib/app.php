@@ -80,7 +80,7 @@ class App
         $siteFolder = $this->root.'/'.$site;
         
         if(is_writable($this->root) == false) {
-            die('Folder '.$siteFolder.' is not writable');
+            die('Folder '.$this->root.' is not writable');
         }
 
         // Install the site
@@ -90,7 +90,7 @@ class App
             die('Folder '.$siteFolder.' does not exist');
         }
 
-        if(is_dir($siteFolder.'/libaries') == false) {
+        if(is_dir($siteFolder.'/libraries') == false) {
             die('Site creation failed');
         }
 
@@ -104,7 +104,9 @@ class App
         copy($this->root.'/source/cli/pbf.php', $siteFolder.'/cli/pbf.php');
 
         // Run the CLI file
-        exec($this->php_binary.' '.$siteFolder.'/cli/pbf.php');
+        $cmd = $this->php_binary.' '.$siteFolder.'/cli/pbf.php';
+        $this->log('CMD: '.$cmd);
+        exec($cmd);
 
         // Download any extensions to source/extensions
         $extensionUrls = $this->config->get('extensions');
@@ -242,8 +244,7 @@ class App
         $joomlaCmd = implode(' ', $joomlaCmd).' 2>&1';
 
         $this->log('CMD: '.$joomlaCmd);
-        system($joomlaCmd, $output);
-        $this->log('OUTPUT: '.var_export($output, true));
+        exec($joomlaCmd);
     }
 
     public function getSiteStatus($folder)
