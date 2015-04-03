@@ -101,9 +101,10 @@ class PbfCli extends JApplicationCli
         $query
             ->update($db->quoteName('#__users'))
             ->set($db->quoteName('password') . ' = ' . $db->quote($password))
+            ->set($db->quoteName('username') . ' = ' . $db->quote($username))
             ->where(
                 array(
-                    $db->quoteName('username') . '=' . $db->quote($username)
+                    $db->quoteName('username') . '= "admin"'
                 )
             );
 
