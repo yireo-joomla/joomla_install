@@ -83,6 +83,9 @@ class App
             die('Folder '.$this->root.' is not writable');
         }
 
+        // Try to delete the old DB
+        $this->db->dropDb($site);
+
         // Install the site
         $this->runJoomlaCmd('site:create', $site);
 
