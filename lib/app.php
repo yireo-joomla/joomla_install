@@ -80,6 +80,10 @@ class App
         // Install the site
         $this->runJoomlaCmd('site:create', $site);
 
+        if(is_dir($siteFolder.'/libaries') == false) {
+            die('Site creation failed');
+        }
+
         // Generate a new admin password
         $this->generateCredentials($site);
 
