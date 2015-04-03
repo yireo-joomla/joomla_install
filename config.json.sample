@@ -4,6 +4,9 @@
         "password": "YOUR_MYSQL_PASSWORD",
         "dbprefix": "pbf_"
     },
+    "server": {
+        "php_binary": ""
+    },
     "site": {
         "secret": "YOUR_SECRET",
         "log": 0,

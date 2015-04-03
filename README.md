@@ -91,7 +91,24 @@ also automatically install extensions by defining them in the `config.json` file
 You can check the URL http://update.joomla.org/language/translationlist_3.xml for instance for
 translations. Make sure to use the URL pointining to the final ZIP file, not an URL to a XML file.
 In effect, this will download the ZIP to the `source/extensions` folder.
-    
+
+## Troubleshooting
+Make sure the default `php` binary is the CLI binary. If for instance the default `/usr/bin/php` binary is a FastCGI executable, the
+CLI tasks of this project will not run. If rearranging the PATH is no option, modify the `config.json` file to point to the right binary.
+
+    {
+        "server": {
+            "php_binary": "/usr/local/bin/php"
+        }
+    }
+
+Also make sure the `source/joomla-console/bin/joomla` script uses the right binary:
+
+    #!/usr/local/bin/php
+
+Make sure `display_errors` is `On`. Also make sure the `memory_limit` is large enough. Enable the `log` flag in the configuration if
+you want to log the commands to the `logs` folder.
+
 ## Todo
 * Command-line script to destroy or create all sites in batches
 * Add language-packs
