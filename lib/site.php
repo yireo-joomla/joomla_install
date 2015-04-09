@@ -13,10 +13,10 @@ class Site
     public function initJoomla()
     {
         ini_set('display_errors', 0);
-        define('DOCUMENT_ROOT', $this->root);
-        define('_JEXEC', 1);
-        define('JPATH_BASE', DOCUMENT_ROOT);
-        define('DS', DIRECTORY_SEPARATOR );
+        if(!defined('DOCUMENT_ROOT')) define('DOCUMENT_ROOT', $this->root);
+        if(!defined('_JEXEC')) define('_JEXEC', 1);
+        if(!defined('JPATH_BASE')) define('JPATH_BASE', DOCUMENT_ROOT);
+        if(!defined('DS')) define('DS', DIRECTORY_SEPARATOR );
 
         // Change the path to the JPATH_BASE
         if(!is_file(JPATH_BASE.DS.'includes'.DS.'framework.php')) {
