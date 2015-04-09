@@ -266,6 +266,10 @@ class App
 
     public function isAuthorized()
     {
+        if(php_sapi_name() == 'cli') {
+            return true;
+        }
+    
         $siteSecret = $this->config->get('site.secret');
 
         if (isset($_GET['secret']) && $_GET['secret'] == $siteSecret) {
