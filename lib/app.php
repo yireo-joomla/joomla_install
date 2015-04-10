@@ -111,6 +111,20 @@ class App
         $this->log('CMD: '.$cmd);
         exec($cmd);
 
+        $this->installExtensions($site);
+
+        // Password reset on first login
+        $password_reset = (bool)$this->config->get('site.password_reset');
+        if($password_reset) {
+            $query = 'UPDATE `#__users` SET `requireReset`=1';
+            $db = $this->getSite($site)->getDbo();
+            $db->setQuery($query);
+            $db->execute();
+        }
+    }
+
+    public function installExtensions($site)
+    {
         // Download any extensions to source/extensions
         $extensionUrls = $this->config->get('extensions');
         if(!empty($extensionUrls)) {
@@ -123,15 +137,6 @@ class App
         $extensions = glob('source/extensions/*');
         foreach($extensions as $extension) {
             $this->runJoomlaCmd('extension:installfile', $site, $extension);
-        }
-
-        // Password reset on first login
-        $password_reset = (bool)$this->config->get('site.password_reset');
-        if($password_reset) {
-            $query = 'UPDATE `#__users` SET `requireReset`=1';
-            $db = $this->getSite($site)->getDbo();
-            $db->setQuery($query);
-            $db->execute();
         }
     }
 
