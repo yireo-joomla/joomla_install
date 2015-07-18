@@ -78,7 +78,7 @@ class App
 
         $site = 'joomla'.$number;
         $siteFolder = $this->root.'/'.$site;
-        
+
         if(is_writable($this->root) == false) {
             die('Folder '.$this->root.' is not writable');
         }
@@ -149,7 +149,7 @@ class App
 
         $json = file_get_contents($jsonFile);
         $data = json_decode($json, true);
-    
+
         if (isset($data['credentials'])) {
             return $data['credentials'];
         }
@@ -165,7 +165,7 @@ class App
         }
 
         switch($password_type) {
-            case 'generate': 
+            case 'generate':
                 $username = 'admin';
                 $alphabet = 'abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789';
                 $alphabet = str_split($alphabet);
@@ -213,7 +213,7 @@ class App
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $extensionUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    
+
         $data = curl_exec($ch);
         $fd = fopen($this->root.'/source/extensions/'.$filename, 'w');
         fwrite($fd, $data);
@@ -274,7 +274,7 @@ class App
         if(php_sapi_name() == 'cli') {
             return true;
         }
-    
+
         $siteSecret = $this->config->get('site.secret');
 
         if (isset($_GET['secret']) && $_GET['secret'] == $siteSecret) {
@@ -306,7 +306,7 @@ class App
         } else {
             $actions[] = 'create';
         }
-        
+
         return $actions;
     }
 
@@ -320,4 +320,16 @@ class App
             }
         }
     }
+
+	public function refreshVersions()
+	{
+		$joomlaCmd = array();
+		$joomlaCmd[] = $this->root.'/source/joomla-console/bin/joomla';
+		$joomlaCmd[] = 'versions';
+		$joomlaCmd[] = '--refresh';
+		$joomlaCmd = implode(' ', $joomlaCmd).' 2>&1';
+
+		$this->log('CMD: '.$joomlaCmd);
+		exec($joomlaCmd);
+	}
 }
