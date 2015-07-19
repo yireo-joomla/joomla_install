@@ -1,6 +1,11 @@
 <?php
 require_once 'lib/loader.php';
 
+if ($config->get('server.version_refresh'))
+{
+	$app->refreshVersions();
+}
+
 $sites = $app->getSites();
 
 foreach($sites as $site) {

@@ -5,7 +5,8 @@
         "dbprefix": "pbf_"
     },
     "server": {
-        "php_binary": ""
+        "php_binary": "",
+        "version_refresh": 1
     },
     "site": {
         "secret": "YOUR_SECRET",
