@@ -19,4 +19,4 @@ mkdir extensions/
 cd extensions/
 
 # Download packages to install
-wget https://github.com/joomla-extensions/patchtester/releases/download/2.0.0.beta2/com_patchtester.tar.gz
+wget https://github.com/joomla-extensions/patchtester/releases/download/2.0.0.beta3/com_patchtester.tar.gz
