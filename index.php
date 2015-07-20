@@ -31,10 +31,10 @@ require_once 'lib/loader.php';
                         <?php echo $site['name']; ?>
                     </td>
                     <td>
-                        <a href="/<?php echo $site['folder']; ?>"><?php echo $config->get('strings.frontend_url'); ?></a>
+                        <a href="<?php echo $rootUrl; ?><?php echo $site['folder']; ?>"><?php echo $config->get('strings.frontend_url'); ?></a>
                     </td>
                     <td>
-                        <a href="/<?php echo $site['folder']; ?>/administrator"><?php echo $config->get('strings.backend_url'); ?></a>
+                        <a href="<?php echo $rootUrl; ?><?php echo $site['folder']; ?>/administrator"><?php echo $config->get('strings.backend_url'); ?></a>
                     </td>
                     <td>
                         <?php echo $site['username']; ?>
