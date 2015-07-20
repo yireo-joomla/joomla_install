@@ -61,6 +61,14 @@ https://github.com/joomlatools/joomla-console
 ...
 ```
 
+## Notes: Setting the Joomla version
+Normally the config value `joomla_version` (under `server`) is set to `latest`, which simply means the latest available stable Joomla
+version is used. You can also install specific versions (`3.4.2`) or a Git branch (`master`, `staging`).
+
+Besides this option, the `batch.php` file also contains a procedure to update the `joomla` command with the latest version. This is
+determined via the config value `server.version_refresh`. It makes sure that an existing PBF repository is updating its definition of
+the `latest` Joomla version.
+
 ## Notes: Setting the password type
 In your `config.json` you can set the option `password_type`.
 See the `config.json.sample` file for an example.
@@ -119,3 +127,4 @@ If in a CGI environment, make sure all files and folders are only writable for t
 
 ## Todo
 * Command-line script to destroy or create all sites in batches
+* Flexible way to install language packs with URL that is no longer dependant on Joomla version

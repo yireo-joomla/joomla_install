@@ -6,6 +6,7 @@
     },
     "server": {
         "php_binary": "",
+        "joomla_version": "latest",
         "version_refresh": 1
     },
     "site": {

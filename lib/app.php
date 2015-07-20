@@ -236,6 +236,16 @@ class App
         $joomlaCmd[] = '--mysql_db_prefix='.$mysql_prefix;
 
         if($task == 'site:create') {
+            $version = $this->config->get('server.joomla_version');
+
+            if ($version == 'latest') {
+                $version = null;
+            }
+
+            if (!empty($version)) {
+                $joomlaCmd[] = '--joomla='.$version;
+            }
+
             $joomlaCmd[] = '--sample-data=testing';
         }
 
