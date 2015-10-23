@@ -17,9 +17,6 @@ class Db
         $host = $this->config->get('mysql.host');
         if(empty($host)) $host = 'localhost';
     
-        $dbname = $this->config->get('mysql.db');
-        if(empty($dbname)) $dbname = $username;
-    
         $this->db = new mysqli($host, $username, $password);
         if ($this->db->connect_errno) {
             die('Failed to connect to MySQL: '.$this->db->connect_error);
