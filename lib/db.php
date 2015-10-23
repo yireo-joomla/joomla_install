@@ -38,7 +38,7 @@ class Db
         $this->db->query('DROP DATABASE IF EXISTS '.$dbName) or die('Error: '.$this->db->error);
     }
 
-    public function runQuery($siteName, $query)
+    public function runQuery($dbName, $query)
     {
         $dbName = $this->filterDbName($dbName);
         $this->db->select_db($dbName);
