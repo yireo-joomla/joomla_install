@@ -17,9 +17,6 @@ class Db
         $host = $this->config->get('mysql.host');
         if(empty($host)) $host = 'localhost';
     
-        $dbname = $this->config->get('mysql.db');
-        if(empty($dbname)) $dbname = $username;
-    
         $this->db = new mysqli($host, $username, $password);
         if ($this->db->connect_errno) {
             die('Failed to connect to MySQL: '.$this->db->connect_error);
@@ -38,7 +35,7 @@ class Db
         $this->db->query('DROP DATABASE IF EXISTS '.$dbName) or die('Error: '.$this->db->error);
     }
 
-    public function runQuery($siteName, $query)
+    public function runQuery($dbName, $query)
     {
         $dbName = $this->filterDbName($dbName);
         $this->db->select_db($dbName);
